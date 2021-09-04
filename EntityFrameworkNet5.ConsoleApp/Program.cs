@@ -1,5 +1,6 @@
 ﻿using EntityFrameworkNet5.Data;
 using EntityFrameworkNet5.Domain;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -12,18 +13,25 @@ namespace EntityFrameworkNet5.ConsoleApp
 
         static async Task Main(string[] args)
         {
-            await InsertRecords();
+            //await CreateRecords();
+            await RetrieveRecords();
 
             Console.WriteLine("Press any key to continue...");
             Console.Read();
         }
 
-        static async Task InsertRecords()
+        static async Task CreateRecords()
         {
             League league = await AddNewLeague(name: "Red Stripe Premier League");
             await AddNewTeamsToLeague(league);
             Team team = await AddNewTeamToNewLeague(leagueName: "Bundesliga", teamName: "Bayern Munich");
         }
+
+        static async Task RetrieveRecords()
+        {
+            await SimpleSelectQuery();
+        }
+
 
         static async Task<League> AddNewLeague(string name)
         {
@@ -66,6 +74,21 @@ namespace EntityFrameworkNet5.ConsoleApp
             await context.SaveChangesAsync();
             return team;
         }
+        static async Task SimpleSelectQuery()
+        {
+            //// Smartest most efficient way to get results
+            var leagues = await context.Leagues.ToListAsync();
+            foreach (var league in leagues)
+            {
+                Console.WriteLine($"{league.Id} - {league.Name}");
+            }
 
+            //// Inefficient way to get results. Keeps connection open until completed and might create lock on table
+            ////foreach (var league in context.Leagues)
+            ////{
+            ////    Console.WriteLine($"{league.Id} - {league.Name}");
+            ////}
+
+        }
     }
 }

@@ -12,32 +12,28 @@ namespace EntityFrameworkNet5.ConsoleApp
 
         static async Task Main(string[] args)
         {
-            ////////////////////////////////////////////////////////////
-            // CREATE LEAGUE
-            ////////////////////////////////////////////////////////////
-            //League league1 = new() { Name = "Red Stripe Premier League" };
-            //await context.Leagues.AddAsync(league1);
-            //await context.SaveChangesAsync();
-
-            ////////////////////////////////////////////////////////////
-            // ADD NEWLY CREATED TEAMS TO LEAGUE
-            ////////////////////////////////////////////////////////////
-            //await AddTeamsWithLeague(league1);
-            //await context.SaveChangesAsync();
-
-            ////////////////////////////////////////////////////////////
-            // CREATE NEW LEAGUE AND NEW TEAM AT THE SAME TIME
-            ////////////////////////////////////////////////////////////
-            //League league2 = new() { Name = "Bundesliga" };
-            //Team team2 = new() {Name = "Bayern Munich", League = league2 };
-            //await context.AddAsync(team2); // Entity type not specified. EF Core infers entity type.
-            //await context.SaveChangesAsync(); 
+            await InsertRecords();
 
             Console.WriteLine("Press any key to continue...");
             Console.Read();
         }
 
-        static async Task AddTeamsWithLeague(League league)
+        static async Task InsertRecords()
+        {
+            League league = await AddNewLeague(name: "Red Stripe Premier League");
+            await AddNewTeamsToLeague(league);
+            Team team = await AddNewTeamToNewLeague(leagueName: "Bundesliga", teamName: "Bayern Munich");
+        }
+
+        static async Task<League> AddNewLeague(string name)
+        {
+            League league = new() { Name = name };
+            await context.Leagues.AddAsync(league);
+            await context.SaveChangesAsync();
+            return league;
+        }
+
+        static async Task AddNewTeamsToLeague(League league)
         {
             var teams = new List<Team>
             {
@@ -60,6 +56,15 @@ namespace EntityFrameworkNet5.ConsoleApp
 
             //// Operation to add multiple objects to database in one call.
             await context.AddRangeAsync(teams);
+        }
+
+        static async Task<Team> AddNewTeamToNewLeague(string leagueName, string teamName)
+        {
+            League league = new() { Name = leagueName };
+            Team team = new() { Name = teamName, League = league };
+            await context.AddAsync(team); // Entity type not specified. EF Core infers entity type.
+            await context.SaveChangesAsync();
+            return team;
         }
 
     }

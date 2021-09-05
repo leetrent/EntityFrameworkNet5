@@ -15,10 +15,11 @@ namespace EntityFrameworkNet5.ConsoleApp
         static async Task Main(string[] args)
         {
             //await CreateRecords();
-            await RetrieveRecords();
-            await QueryFilters();
+            //await RetrieveRecords();
+            //await QueryFilters();
+            await AdditionalQueryMethods();
 
-            Console.WriteLine("Press any key to continue...");
+            Console.WriteLine("\nPress any key to continue...");
             Console.Read();
         }
 
@@ -116,6 +117,34 @@ namespace EntityFrameworkNet5.ConsoleApp
             {
                 Console.WriteLine($"{league.Id} - {league.Name}");
             }
+        }
+
+        static async Task AdditionalQueryMethods()
+        {
+            //// These methods also have non-async
+            //var leagues = context.Leagues;
+            //var list = await leagues.ToListAsync();
+            //var first = await leagues.FirstAsync();
+            //var firstOrDefault = await leagues.FirstOrDefaultAsync();
+            //var single = await leagues.SingleAsync();
+            //var singleOrDefault = await leagues.SingleOrDefaultAsync();
+
+            //var count = await leagues.CountAsync();
+            long nbrOfTeams = await context.Teams.LongCountAsync();
+            int minTeamId = await context.Teams.MinAsync(q => q.Id);
+            int maxTeamId = await context.Teams.MaxAsync(q => q.Id);
+
+            Console.WriteLine();
+            Console.WriteLine($"# of teams.....: {nbrOfTeams}");
+            Console.WriteLine($"Lowest Team Id.: {minTeamId}");
+            Console.WriteLine($"Highest Team Id: {maxTeamId}");
+            Console.WriteLine();
+
+
+            //var max = await leagues.MaxAsync();
+
+            //// DbSet Method that will execute
+            //var league = await context.Leagues.FindAsync(1);
         }
     }
 }

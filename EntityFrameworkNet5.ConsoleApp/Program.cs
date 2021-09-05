@@ -3,6 +3,7 @@ using EntityFrameworkNet5.Domain;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace EntityFrameworkNet5.ConsoleApp
@@ -15,6 +16,7 @@ namespace EntityFrameworkNet5.ConsoleApp
         {
             //await CreateRecords();
             await RetrieveRecords();
+            await QueryFilters();
 
             Console.WriteLine("Press any key to continue...");
             Console.Read();
@@ -88,7 +90,32 @@ namespace EntityFrameworkNet5.ConsoleApp
             ////{
             ////    Console.WriteLine($"{league.Id} - {league.Name}");
             ////}
+        }
 
+        static async Task QueryFilters()
+        {
+            Console.Write("\nEnter league name: ");
+            string leagueName = Console.ReadLine();
+            Console.WriteLine($"Searching for '{leagueName}':\n");
+
+            List<League> exactMatches = await context.Leagues.Where(q => q.Name.Equals(leagueName)).ToListAsync();
+            Console.WriteLine("\nEXACT MATCHES: ");
+            foreach (var league in exactMatches)
+            {
+                Console.WriteLine($"{league.Id} - {league.Name}");
+            }
+
+            // CONTAINS         
+            //List<League> partialMatches = await context.Leagues.Where(q => q.Name.Contains(leagueName)).ToListAsync();
+
+            // EF.Functions.Like
+            List<League> partialMatches = await context.Leagues.Where(q => EF.Functions.Like(q.Name, $"%{leagueName}%")).ToListAsync();
+
+            Console.WriteLine("\nPARTIAL MATCHES:\n ");
+            foreach (var league in partialMatches)
+            {
+                Console.WriteLine($"{league.Id} - {league.Name}");
+            }
         }
     }
 }

@@ -17,7 +17,8 @@ namespace EntityFrameworkNet5.ConsoleApp
             //await CreateRecords();
             //await RetrieveRecords();
             //await QueryFilters();
-            await AdditionalQueryMethods();
+            //await AdditionalQueryMethods();
+            await AlternativeLinqSyntax();
 
             Console.WriteLine("\nPress any key to continue...");
             Console.Read();
@@ -145,6 +146,20 @@ namespace EntityFrameworkNet5.ConsoleApp
 
             //// DbSet Method that will execute
             //var league = await context.Leagues.FindAsync(1);
+        }
+
+        static async Task AlternativeLinqSyntax()
+        {
+            Console.Write($"Enter Team Name (or part of): ");
+            var teamName = Console.ReadLine();
+            var teams = await (from i in context.Teams
+                               where EF.Functions.Like(i.Name, $"%{teamName}%")
+                               select i).ToListAsync();
+
+            foreach (var team in teams)
+            {
+                Console.WriteLine($"{team.Id} - {team.Name}");
+            }
         }
     }
 }

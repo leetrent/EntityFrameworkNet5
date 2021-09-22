@@ -18,10 +18,34 @@ namespace EntityFrameworkNet5.ConsoleApp
             //await RetrieveRecords();
             //await QueryFilters();
             //await AdditionalQueryMethods();
-            await AlternativeLinqSyntax();
+            //await AlternativeLinqSyntax();
 
+            await QueryRelatedRecords();
             Console.WriteLine("\nPress any key to continue...");
             Console.Read();
+        }
+
+        static async Task QueryRelatedRecords()
+        {
+            //// Get Many Related Records - Leagues -> Teams
+            //var leagues = await context.Leagues.Include(q => q.Teams).ToListAsync();
+
+            //// Get One Related Record - Team -> Coach
+            //var team = await context.Teams
+            //    .Include(q => q.Coach)
+            //    .FirstOrDefaultAsync(q => q.Id == 3);
+
+            //// Get 'Grand Children' Related Record - Team -> Matches -> Home/Away Team
+            //var teamsWithMatchesAndOpponents = await context.Teams
+            //    .Include(q => q.AwayMatches).ThenInclude(q => q.HomeTeam).ThenInclude(q => q.Coach)
+            //    .Include(q => q.HomeMatches).ThenInclude(q => q.AwayTeam).ThenInclude(q => q.Coach)
+            //    .FirstOrDefaultAsync(q => q.Id == 1);
+
+            //// Get Includes with filters
+            var teams = await context.Teams
+                .Where(q => q.HomeMatches.Count > 0)
+                .Include(q => q.Coach)
+                .ToListAsync();
         }
 
         static async Task CreateRecords()

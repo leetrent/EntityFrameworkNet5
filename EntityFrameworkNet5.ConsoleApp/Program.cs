@@ -1,5 +1,6 @@
 ﻿using EntityFrameworkNet5.Data;
 using EntityFrameworkNet5.Domain;
+using EntityFrameworkNet5.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -19,10 +20,50 @@ namespace EntityFrameworkNet5.ConsoleApp
             //await QueryFilters();
             //await AdditionalQueryMethods();
             //await AlternativeLinqSyntax();
+            //await QueryRelatedRecords();
 
-            await QueryRelatedRecords();
+            await StronglyTypedProjection();
             Console.WriteLine("\nPress any key to continue...");
             Console.Read();
+        }
+
+            async static Task SelectOneProperty()
+        {
+            var teams = await context.Teams.Select(q => q.Name).ToListAsync();
+        }
+
+        async static Task AnonymousProjection()
+        {
+            var teams = await context.Teams.Include(q => q.Coach).Select(
+                q => 
+                new { 
+                        TeamName = q.Name, 
+                        CoachName = q.Coach.Name
+                    }
+                ).ToListAsync();
+
+            foreach (var item in teams)
+            {
+                Console.WriteLine($"Team: {item.TeamName} | Coach: {item.CoachName}");
+            }
+        }
+
+        async static Task StronglyTypedProjection()
+        {
+            var teams = await context.Teams.Include(q => q.Coach).Include(q => q.League).Select(
+                q =>
+                new TeamDetail {
+                    TeamName = q.Name,
+                    CoachName = q.Coach.Name,
+                    LeagueName = q.League.Name
+                }
+                ).ToListAsync();
+
+            Console.WriteLine("");
+            foreach (var item in teams)
+            {
+                Console.WriteLine($"Team: {item.TeamName} | Coach: {item.CoachName} | League: {item.LeagueName}");
+            }
         }
 
         static async Task QueryRelatedRecords()

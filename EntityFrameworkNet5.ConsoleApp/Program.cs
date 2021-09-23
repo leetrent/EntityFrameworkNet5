@@ -21,13 +21,18 @@ namespace EntityFrameworkNet5.ConsoleApp
             //await AdditionalQueryMethods();
             //await AlternativeLinqSyntax();
             //await QueryRelatedRecords();
-
-            await StronglyTypedProjection();
+            //await StronglyTypedProjection();
+            await FilteringWithRelatedData();
             Console.WriteLine("\nPress any key to continue...");
             Console.Read();
         }
 
-            async static Task SelectOneProperty()
+        async static Task FilteringWithRelatedData()
+        {
+            var leagues = await context.Leagues.Where(q => q.Teams.Any(x => x.Name.Contains("Bay"))).ToListAsync();
+        }
+
+        async static Task SelectOneProperty()
         {
             var teams = await context.Teams.Select(q => q.Name).ToListAsync();
         }

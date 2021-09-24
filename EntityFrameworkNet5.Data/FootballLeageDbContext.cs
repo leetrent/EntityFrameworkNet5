@@ -23,6 +23,7 @@ namespace EntityFrameworkNet5.Data
         public DbSet<League> Leagues { get; set; }
         public DbSet<Match> Matches { get; set; }
         public DbSet<Coach> Coaches { get; set; }
+        public DbSet<TeamsCoachesLeaguesView> TeamsCoachesLeagues { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -40,6 +41,7 @@ namespace EntityFrameworkNet5.Data
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<TeamsCoachesLeaguesView>().HasNoKey().ToView("TeamsCoachesLeagues");
         }
     }
 }

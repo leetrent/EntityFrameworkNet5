@@ -22,9 +22,15 @@ namespace EntityFrameworkNet5.ConsoleApp
             //await AlternativeLinqSyntax();
             //await QueryRelatedRecords();
             //await StronglyTypedProjection();
-            await FilteringWithRelatedData();
+            //await FilteringWithRelatedData();
+            await QueryView();
             Console.WriteLine("\nPress any key to continue...");
             Console.Read();
+        }
+
+        async static Task QueryView()
+        {
+            var details = await context.TeamsCoachesLeagues.ToListAsync();
         }
 
         async static Task FilteringWithRelatedData()

@@ -23,9 +23,37 @@ namespace EntityFrameworkNet5.ConsoleApp
             //await QueryRelatedRecords();
             //await StronglyTypedProjection();
             //await FilteringWithRelatedData();
-            await QueryView();
+            //await QueryView();
+            //await ExecQueryStoredProcedure();
+            await ExecNonQueryStoredProcedure();
+
             Console.WriteLine("\nPress any key to continue...");
             Console.Read();
+        }
+
+        async static Task ExecNonQueryStoredProcedure()
+        {
+            var teamId = 10;
+            var affectedRows = await context.Database.ExecuteSqlRawAsync("exec sp_DeleteTeamById {0}", teamId);
+
+            var teamId2 = 12;
+            var affectedRows2 = await context.Database.ExecuteSqlInterpolatedAsync($"exec sp_DeleteTeamById {teamId2}");
+        }
+
+        async static Task ExecQueryStoredProcedure()
+        {
+            var teamId = 3;
+            var result = await context.Coaches.FromSqlRaw("EXEC dbo.sp_GetTeamCoach {0}", teamId).ToListAsync();
+        }
+
+        async static Task RawSQLQuery()
+        {
+            var name = "AS Roma";
+            var teams1 = await context.Teams.FromSqlRaw($"Select * from Teams where name = '{name}'")
+                .Include(q => q.Coach).ToListAsync();
+
+            var teams2 = await context.Teams.FromSqlInterpolated($"Select * from Teams where name = {name}").ToListAsync();
+
         }
 
         async static Task QueryView()

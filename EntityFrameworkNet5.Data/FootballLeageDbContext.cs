@@ -1,11 +1,8 @@
-﻿using EntityFrameworkNet5.Domain;
+﻿using EntityFrameworkNet5.Data.Configurations.Entities;
+using EntityFrameworkNet5.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EntityFrameworkNet5.Data
 {
@@ -15,7 +12,7 @@ namespace EntityFrameworkNet5.Data
         {
             optionsBuilder
                 .UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB; Initial Catalog=FootballLeage_EfCore")
-                .LogTo(Console.WriteLine, new [] { DbLoggerCategory.Database.Command.Name }, LogLevel.Information)
+                .LogTo(Console.WriteLine, new[] { DbLoggerCategory.Database.Command.Name }, LogLevel.Information)
                 .EnableSensitiveDataLogging();
         }
 
@@ -42,6 +39,11 @@ namespace EntityFrameworkNet5.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<TeamsCoachesLeaguesView>().HasNoKey().ToView("TeamsCoachesLeagues");
+
+            modelBuilder.ApplyConfiguration(new LeagueSeedConfiguration());
+            modelBuilder.ApplyConfiguration(new TeamSeedConfiguration());
+            modelBuilder.ApplyConfiguration(new CoachSeedConfiguration());
+           
         }
     }
 }

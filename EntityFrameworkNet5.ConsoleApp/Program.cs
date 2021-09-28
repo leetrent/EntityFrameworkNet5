@@ -25,7 +25,11 @@ namespace EntityFrameworkNet5.ConsoleApp
             //await FilteringWithRelatedData();
             //await QueryView();
             //await ExecQueryStoredProcedure();
-            await ExecNonQueryStoredProcedure();
+            //await ExecNonQueryStoredProcedure();
+
+            //await AddNewLeague();
+            await SimpleUpdateLeagueRecord();
+            //await SimpleUpdateTeamRecord();
 
             Console.WriteLine("\nPress any key to continue...");
             Console.Read();
@@ -265,5 +269,74 @@ namespace EntityFrameworkNet5.ConsoleApp
                 Console.WriteLine($"{team.Id} - {team.Name}");
             }
         }
+
+        static async Task AddNewLeague()
+        {
+            //// Adding a new League Object
+            var league = new League { Name = "Audit Testing League" };
+            await context.Leagues.AddAsync(league);
+            await context.SaveChangesAsync();
+
+            //// Function To add new teams related to the new league object. 
+            await AddTeamsWithLeague(league);
+            await context.SaveChangesAsync();
+        }
+
+        static async Task AddTeamsWithLeague(League league)
+        {
+            var teams = new List<Team>
+            {
+                new Team
+                {
+                    Name = "Juventus",
+                    LeagueId = league.Id
+                },
+                new Team
+                {
+                    Name = "AC Milan",
+                    LeagueId = league.Id
+                },
+                new Team
+                {
+                    Name = "AS Roma",
+                    League = league
+                }
+            };
+
+            //// Operation to add multiple objects to database in one call.
+            await context.AddRangeAsync(teams);
+        }
+
+        private static async Task SimpleUpdateLeagueRecord()
+        {
+            ////Retrieve Record
+            var league = await context.Leagues.FindAsync(21);
+            ///Make Record Changes
+            league.Name = "Scottish Premiership (retry)";
+            ///Save Changes
+            await context.SaveChangesAsync();
+
+            await GetRecord();
+
+        }
+        private static async Task GetRecord()
+        {
+            ////Retrieve Record
+            var league = await context.Leagues.FindAsync(21);
+            Console.WriteLine($"{league.Id} - {league.Name}");
+        }
+
+        private static async Task SimpleUpdateTeamRecord()
+        {
+            var team = new Team
+            {
+                Id = 7,
+                Name = "Seba United FC",
+                LeagueId = 2
+            };
+            context.Teams.Update(team);
+            await context.SaveChangesAsync();
+        }
+
     }
 }

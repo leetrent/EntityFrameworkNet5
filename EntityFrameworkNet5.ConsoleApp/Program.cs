@@ -28,8 +28,8 @@ namespace EntityFrameworkNet5.ConsoleApp
             //await ExecNonQueryStoredProcedure();
 
             //await AddNewLeague();
-            await SimpleUpdateLeagueRecord();
-            //await SimpleUpdateTeamRecord();
+            //await SimpleUpdateLeagueRecord();
+            await SimpleUpdateTeamRecord();
 
             Console.WriteLine("\nPress any key to continue...");
             Console.Read();

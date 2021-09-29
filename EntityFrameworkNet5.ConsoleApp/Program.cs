@@ -29,7 +29,7 @@ namespace EntityFrameworkNet5.ConsoleApp
 
             //await AddNewLeague();
             //await SimpleUpdateLeagueRecord();
-            await SimpleUpdateTeamRecord();
+           //await SimpleUpdateTeamRecord();
 
             Console.WriteLine("\nPress any key to continue...");
             Console.Read();
@@ -279,7 +279,7 @@ namespace EntityFrameworkNet5.ConsoleApp
 
             //// Function To add new teams related to the new league object. 
             await AddTeamsWithLeague(league);
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync("lee.trent");
         }
 
         static async Task AddTeamsWithLeague(League league)
@@ -312,9 +312,9 @@ namespace EntityFrameworkNet5.ConsoleApp
             ////Retrieve Record
             var league = await context.Leagues.FindAsync(21);
             ///Make Record Changes
-            league.Name = "Scottish Premiership (retry)";
+            league.Name = "Scottish Premiership (2021.09.29.8.55)";
             ///Save Changes
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync("lee.trent");
 
             await GetRecord();
 
@@ -330,12 +330,12 @@ namespace EntityFrameworkNet5.ConsoleApp
         {
             var team = new Team
             {
-                Id = 7,
+                Id = 26,
                 Name = "Seba United FC",
-                LeagueId = 2
+                LeagueId = 21
             };
             context.Teams.Update(team);
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync("lee.trent");
         }
 
     }

@@ -29,7 +29,11 @@ namespace EntityFrameworkNet5.ConsoleApp
 
             //await AddNewLeague();
             //await SimpleUpdateLeagueRecord();
-           //await SimpleUpdateTeamRecord();
+            //await SimpleUpdateTeamRecord();
+
+            //await TestAuditableCreate();
+            //await TestAuditableUpdate();
+            await TestAuditableDelete();
 
             Console.WriteLine("\nPress any key to continue...");
             Console.Read();
@@ -336,6 +340,44 @@ namespace EntityFrameworkNet5.ConsoleApp
             };
             context.Teams.Update(team);
             await context.SaveChangesAsync("lee.trent");
+        }
+
+        static async Task TestAuditableCreate()
+        {
+            League league = new League { Name = "Lee Trent League" };
+            await context.Leagues.AddAsync(league);
+            await context.SaveChangesAsync("lee.trent");
+
+
+            Team team = new Team { Name = "Lee Trent Team", LeagueId = league.Id };
+            await context.Teams.AddAsync(team);
+            await context.SaveChangesAsync("lee.trent");
+        }
+
+        static async Task TestAuditableUpdate()
+        {
+            League league = await context.Leagues.FindAsync(26);
+            league.Name = "Lee Trent League (updated)";
+            context.Leagues.Update(league);
+            await context.SaveChangesAsync("lee.trent");
+
+            Team team  = await context.Teams.FindAsync(34);
+            team.Name = "Lee Trent Team (updated)";
+            context.Teams.Update(team);
+            await context.SaveChangesAsync("lee.trent");
+        }
+
+        static async Task TestAuditableDelete()
+        {
+            Team team = await context.Teams.FindAsync(34);
+            context.Teams.Remove(team);
+            await context.SaveChangesAsync("lee.trent");
+
+            League league = await context.Leagues.FindAsync(26);
+            context.Leagues.Remove(league);
+            await context.SaveChangesAsync("lee.trent");
+
+
         }
 
     }

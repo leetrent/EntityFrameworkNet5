@@ -9,10 +9,13 @@ using System.Threading.Tasks;
 
 namespace EntityFrameworkNet5.Data.Configurations.Entities
 {
-    public class LeagueSeedConfiguration : IEntityTypeConfiguration<League>
+    public class LeagueConfiguration : IEntityTypeConfiguration<League>
     {
         public void Configure(EntityTypeBuilder<League> builder)
         {
+            builder.Property(t => t.Name).HasMaxLength(50);
+            builder.HasIndex(t => t.Name).IsUnique();
+
             builder.HasData(
                     new League
                     {

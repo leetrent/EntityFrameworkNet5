@@ -9,10 +9,25 @@ using System.Threading.Tasks;
 
 namespace EntityFrameworkNet5.Data.Configurations.Entities
 {
-    public class TeamSeedConfiguration : IEntityTypeConfiguration<Team>
+    public class TeamConfiguration : IEntityTypeConfiguration<Team>
     {
         public void Configure(EntityTypeBuilder<Team> builder)
         {
+            builder.Property(t => t.Name).HasMaxLength(50);
+            builder.HasIndex(t => t.Name).IsUnique();
+
+            builder.HasMany(t => t.HomeMatches)
+                    .WithOne(m => m.HomeTeam)
+                    .HasForeignKey(m => m.HomeTeamId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany(t => t.AwayMatches)
+                .WithOne(m => m.AwayTeam)
+                .HasForeignKey(m => m.AwayTeamId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasData(
                     new Team
                     {
